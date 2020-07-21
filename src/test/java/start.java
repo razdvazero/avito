@@ -9,12 +9,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import static org.testng.Assert.*;
 
 
 public class start {
 
     public static WebDriver driver;
-
+    public static boolean checkResult=false;
+    public static String city;
 
     @Пусть("открыт ресурс авито")
     public static void open() {
@@ -49,6 +51,7 @@ public class start {
     @Тогда("в поле регион введено значение {string}")
     public void Vladivostok(String string){
         driver.findElement(By.xpath("//input[@class='suggest-input-3p8yi']")).sendKeys(string);
+        city=string;
         try {
             Thread.sleep(1000);// если не подождать то он ижевск ставит
         } catch (InterruptedException e) {
@@ -60,9 +63,13 @@ public class start {
         driver.findElement(By.xpath("//li[@class='suggest-suggest-1wwEm text-text-1PdBw text-size-m-4mxHN']")).click();
         driver.findElement(By.xpath("//button[@class='button-button-2Fo5k button-size-m-7jtw4 button-primary-1RhOG']")).click();
     }
-    @Тогда("открылась страница результаты по запросу принтер")
-    public void wtf(){
-        System.out.println("открыло");
+    @Тогда("открылась страница результаты по запросу {string}")
+    public void wtf(String string){
+        WebElement check = driver.findElement(By.xpath("//h1[@class='page-title-text-WxwN3 page-title-inline-2v2CW']"));
+        if (check.getText().contains(string) && check.getText().contains(city)) {
+            checkResult = true;
+        }
+        assertTrue(checkResult, "Не открылась нужная страница");
     }
     @И("активирован чекбокс только с фотографией")
     public void checkbox(){
